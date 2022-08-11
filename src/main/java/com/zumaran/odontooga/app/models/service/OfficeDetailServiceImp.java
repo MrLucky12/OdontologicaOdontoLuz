@@ -18,7 +18,7 @@ public class OfficeDetailServiceImp implements IOfficeDetailService{
     private IOfficeDetailDAO odDAO;
 
     @Override
-    public void delete(Long id) { /* DELETE */ }
+    public void delete(Long id) { /* DELETE x2 */ }
 
     @Override
     @Transactional(readOnly = true)
