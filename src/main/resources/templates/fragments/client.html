@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+   <div th:fragment="clientTable">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              
+              <!-- START HERE MAIN DIV -->
+              
+                <!-- Contextual Classes -->
+                <div class="card">
+                  <div class="row">
+                      <h5 class="card-header">Pacientes</h5>
+                      <!-- <div th:replace="fragments/category::addCategory"></div> -->
+                      <div class="col-3">
+                        <button class="btn rounded-pill btn-info" ><a th:href="@{/admin/client/add}">ADD</a></button>
+                      </div>
+                      
+                  </div>
+
+                  <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>ID</th><th>NOMBRES</th><th>EMAIL</th><th>TELEFONO</th><th>ESTADO</th><th>INGRESO</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-border-bottom-0">
+
+                        <tr class="table-light" th:each="item: ${clients}">
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.id}"></strong></td>
+                            <td ><strong ><a th:href="@{/admin/client/show/} + ${item.id}" th:text="${item.name}+' '+${item.lastName}"></a></strong></td>
+                            <td th:text="${item.email}"></td>
+                            <!-- <td><span class="badge bg-label-primary me-1" th:text="${item.createAt}"></span></td> -->
+                            <td th:text="${item.phone}"></td>
+                            <td th:text="${item.status} ? 'Activo/online' : 'vacas/offline?' "></td>
+                            <td th:text="${item.createAt}"></td>
+                            <td>
+                              <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                  <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                  <a class="dropdown-item" th:href="@{/admin/client/add/}+${item.id}"><i class="bx bx-edit-alt me-1" th:text="'edit'"></i></a>
+                                  <a class="dropdown-item" th:href="@{/admin/client/delete/}+${item.id}"><i class="bx bx-trash me-1" th:text="'delete'"></i></a>
+                                </div>
+                              </div>
+                            </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                    <br>
+                    <nav th:replace="extras::paginator"></nav>
+
+                  </div>
+                </div>
+                <!--/ Contextual Classes -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+  <div th:fragment="addClient">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              
+              <!-- START HERE MAIN DIV -->
+
+              <div th:object="${client}" th:remove="tag">
+                <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                  <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+              </div>
+
+            <form th:action="@{/admin/client/add}" th:object="${client}" method="post" enctype="multipart/form-data">
+
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Add Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+
+                <div class="row g-2">
+
+                  <!-- NAME -->
+                  <div class="col mb-3">
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" id="name" class="form-control" placeholder="Nombre" th:field="*{name}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- LASTNAME -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="description" class="form-label">Apellido</label>
+                      <input type="text" id="lastName" class="form-control" placeholder="Descripcion" th:field="*{lastName}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+                    </div>
+                  </div>                  
+
+                  <!-- EMAIL -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="email" class="form-label">email</label>
+                      <input type="email" id="email" class="form-control" placeholder="email" th:field="*{email}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row g-2">
+
+                  <!-- PHONE -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="phone" class="form-label">Celular</label>
+                      <input type="tel" id="phone" class="form-control" placeholder="Phone" th:field="*{phone}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                    </div>
+                  </div>
+
+                  <!-- CREATE AT -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="createAt" class="form-label">Creacion</label>
+                      <input type="date" id="createAt" class="form-control" th:field="*{createAt}" th:errorclass="'form-control alert-danger'">
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                    </div>
+                  </div>
+
+                  <!-- FILE -->
+                  <div class="col mb-3">
+                    <label for="formFile" class="form-label">Foto Perfil</label>
+                    <input class="form-control" type="file" name="file" id="formFile" />
+                  </div>
+
+                  <!-- AUTO DATE PICKER | TODAY -->
+                  <script>
+                    var date = new Date();
+                    
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+                    
+                    if (month < 10) month = "0" + month;
+                    if (day < 10) day = "0" + day;
+                    
+                    var today = year + "-" + month + "-" + day;       
+                    document.getElementById("createAt").value = today;
+                  </script>
+                </div>
+
+                <div class="row g-2">
+
+                  <!-- STATUS -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="formFile" class="form-label">STATUS</label>
+                      <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="status" th:field="*{status}" th:errorclass="'form-control alert-danger'" checked/>
+                        <label class="form-check-label" for="status">Activo</label>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <input type="submit" value="Save" class="btn btn-primary" >
+              </div>
+
+            </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:fragment="showClient">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              
+              <!-- START HERE MAIN DIV -->
+
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Datos Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body" style="column-count: 2;">
+              
+                <div class="col" >
+                  <div class="d-flex align-items-start align-items-sm-center gap-4">
+                    <img th:if="${#strings.length(item.photo) > 0}" th:src="@{/admin/client}+'/uploads/'+ ${item.photo}" th:alt="${item.photo}" class="d-block rounded" height="50%" width="50%" id="uploadedAvatar" />
+                  </div>
+                </div>
+
+                <br>
+                <div class="col">
+
+                  <div class="row g-2">
+
+                    <!-- NAME -->
+                    <div class="col mb-3">
+                      <div class="col mb-3">
+                        <div class="form-group">
+                          <label for="name" class="form-label">Nombre</label>
+                          <input type="text" id="name" class="form-control" placeholder="Nombre" th:value="${item.name}" disabled/>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- LASTNAME -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="description" class="form-label">Apellido</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Descripcion" th:value="${item.lastName}" disabled/>
+                      </div>
+                    </div>                  
+
+                    <!-- EMAIL -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="email" class="form-label">email</label>
+                        <input type="email" id="email" class="form-control" placeholder="email" th:value="${item.email}" disabled/>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row g-2">
+
+                    <!-- PHONE -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="phone" class="form-label">Celular</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="Phone" th:value="${item.phone}" disabled/>
+                      </div>
+                    </div>
+
+                    <!-- CREATE AT -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="createAt" class="form-label">INGRESO</label>
+                        <input type="date" id="createAt" class="form-control" th:value="${item.createAt}" disdabled>
+                      </div>
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="formFile" class="form-label">STATUS</label>
+                        <div class="form-check form-switch mb-2">
+                          <input class="form-check-input" type="checkbox" id="status" th:value="${item.status}" checked disabled/>
+                          <label class="form-check-label" for="status">Activo</label>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

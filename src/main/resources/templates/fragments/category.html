@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+  <div th:fragment="categoryTable">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <!-- START HERE MAIN DIV -->
+
+                <!-- Contextual Classes -->
+                <div class="card">
+                  <div class="row">
+                      <h5 class="card-header">Categorias del Inventario</h5>
+                      <!-- <div th:replace="fragments/category::addCategory"></div> -->
+                      <div class="col-3">
+                        <button class="btn rounded-pill btn-info" ><a th:href="@{/admin/category/add}">ADD</a></button>
+                      </div>
+
+                  </div>
+
+                  <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>ELEMENTOS</th><th>CREACION</th><th>OPCIONES</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-border-bottom-0">
+
+                        <tr class="table-light" th:each="item: ${categories}">
+
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.id}"></strong></td>
+                            <td ><strong ><a th:href="@{/admin/category/product/}+${item.id}" th:text="${item.name}"></a></strong></td>
+                            <td th:text="${item.description}"></td>
+                            <!-- TEST | NUMBERS OF ELEMENTS -->
+                            <td><a th:href="@{/admin/category/count/(id=${item.id})}"></a></td>
+                            <td><span class="badge bg-label-primary me-1" th:text="${item.createAt}"></span></td>
+
+                            <td>
+                              <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                  <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                  <a class="dropdown-item" th:href="@{/admin/category/add/}+${item.id}"><i class="bx bx-edit-alt me-1" th:text="'edit'"></i></a>
+                                  <a class="dropdown-item" th:href="@{/admin/category/delete/}+${item.id}"><i class="bx bx-trash me-1" th:text="'delete'"></i></a>
+                                </div>
+                              </div>
+                            </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!--/ Contextual Classes -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+  <div th:fragment="addCategory">
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <!-- START HERE MAIN DIV -->
+              <div th:object="${category}" th:remove="tag">
+                <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                  <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+              </div>
+
+            <form th:action="@{/admin/category/add}" th:object="${category}" method="post">
+
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalCenterTitle">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+
+                <!-- NAME -->
+                <div class="row">
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="name" class="form-label">Nombre</label>
+                      <input type="text" id="name" class="form-control" placeholder="Nombre" th:field="*{name}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row g-2">
+
+                  <!-- DESCRIPTION -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="description" class="form-label">Descripcion</label>
+                      <input type="text" id="description" class="form-control" placeholder="Descripcion" th:field="*{description}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                    </div>
+                  </div>
+
+                  <!-- CREATE AT -->
+                  <div class="col mb-3">
+                    <div class="form-group">
+                      <label for="createAt" class="form-label">Creacion</label>
+                      <input type="date" id="createAt" class="form-control" th:field="*{createAt}" th:errorclass="'form-control alert-danger'"/>
+                      <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                    </div>
+                  </div>
+
+                  <!-- AUTO DATE PICKER | TODAY -->
+                  <script>
+                    var date = new Date();
+
+                    var day = date.getDate();
+                    var month = date.getMonth() + 1;
+                    var year = date.getFullYear();
+
+                    if (month < 10) month = "0" + month;
+                    if (day < 10) day = "0" + day;
+
+                    var today = year + "-" + month + "-" + day;
+                    document.getElementById("createAt").value = today;
+                  </script>
+
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <input type="submit" value="Save" class="btn btn-primary" >
+              </div>
+
+            </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:fragment="productByCategory">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <!-- START HERE MAIN DIV -->
+
+                <!-- Contextual Classes -->
+                <div class="card">
+                  <div class="row">
+                      <h5 class="card-header">Categorias del Inventario</h5>
+                      <!-- <div th:replace="fragments/category::addCategory"></div> -->
+                      <div class="col-3">
+                        <button class="btn rounded-pill btn-info" ><a th:href="@{/admin/category/add}">ADD</a></button>
+                      </div>
+
+                  </div>
+
+                  <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>ELEMENTOS</th><th>CREACION</th><th>OPCIONES</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-border-bottom-0">
+
+                        <tr class="table-light" th:each="item: ${products}">
+
+                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.id}"></strong></td>
+                            <td ><strong th:text="${item.name}"></strong></td>
+                            <td th:text="${item.description}"></td>
+                            <td><span class="badge bg-label-primary me-1" th:text="${item.createAt}"></span></td>
+
+                            <td>
+                              <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                  <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                  <a class="dropdown-item" ><i class="bx bx-edit-alt me-1" th:text="'edit'"></i></a>
+                                  <a class="dropdown-item" ><i class="bx bx-trash me-1" th:text="'delete'"></i></a>
+                                </div>
+                              </div>
+                            </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!--/ Contextual Classes -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+
+</body>
+</html>

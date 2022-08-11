@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+  <div th:fragment="showOffice">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              <!-- Contextual Classes -->
+
+              <div class="card">
+
+                <div class="col"><br>
+                    <h5>OPCION VALIDAD POR ROL DE USUARIO</h5>
+                  <button class="btn rounded-pill btn-info" ><a th:href="@{/admin/office/add}">ADD</a></button>
+                </div>
+
+                <div class="table-responsive text-nowrap">
+
+                    <div class="col-456" style="column-count: 3;">
+                      <!-- <style type="text/css">div { column-count: 3; }</style> -->
+                        <!-- OFFICE CARD -->
+                        <div class="col-md-6 col-lg-12 mb-3" th:each="item: ${offices}">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${item.name}"></h5>
+                                    <h6 class="card-subtitle text-muted" th:text="${item.dentist.name}"></h6>
+                                </div>
+
+                                <img class="img-fluid" th:src="@{/assets/img/elements/13.jpg}" th:alt="'item.photo'" alt="imagen n"/>
+
+                                <div class="card-body">
+                                    <p class="card-text" th:text="${item.description}"></p>
+                                    <a th:href="@{/admin/officeDetail/addProducts}" class="card-link">Inventario</a>
+                                    <a href="javascript:void(0);" class="card-link">Citas</a>
+                                    <a href="javascript:void(0);" class="card-link">extra 3</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                  <br>
+                  <!-- 3+ OFFICES CHANGE PAGINATOR TO SLIDE O CAROUSEL -->
+                  <nav th:replace="extras::paginator"></nav>
+
+                </div>
+              </div>
+              <!--/ Contextual Classes -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- / Content -->
+  </div>
+
+  <div th:fragment="addOffice">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <div th:object="${office}" th:remove="tag">
+                <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                  <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+              </div>
+
+              <form th:action="@{/admin/office/add}" th:object="${office}" method="post" enctype="multipart/form-data">
+
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCenterTitle">Agregar Consultorio</h5>
+                </div>
+  
+                <div class="modal-body">
+  
+                    <div class="row g-2">
+
+                        <!-- NAME -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                            <label for="name" class="form-label">Nombre</label>
+                            <input type="text" id="name" class="form-control" placeholder="Nombre" th:field="*{name}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                            </div>
+                        </div>
+
+                        <!-- DENTIST -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                            <label class="form-label">Odontologo</label>
+                            <select class="form-select" th:field="*{dentist.id}">
+                                <th:block th:each="item :${dentists}">
+                                <option  th:value="${item.id}" th:text="${item.name}"></option>
+                                </th:block>
+                            </select>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></small> -->
+                            </div>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                                <label for="formFile" class="form-label">STATUS</label>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="status" th:field="*{status}"
+                                        th:errorclass="'form-control alert-danger'" checked />
+                                    <label class="form-check-label" for="status">Activo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+  
+                    <div class="row g-2">
+
+                        <!-- DESCRIPTION -->
+                        <div class="col mb-0">
+                            <div class="form-group">
+                            <label for="description" class="form-label">Descripcion</label>
+                            <input type="text" id="description" class="form-control" placeholder="Descripcion" th:field="*{description}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                            </div>
+                        </div>
+
+                        <!-- DATE CREATION -->
+                        <div class="col mb-0">
+                            <div class="form-group">
+                            <label for="createAt" class="form-label">Creacion</label>
+                            <input type="date" id="createAt" class="form-control" placeholder="DD - MM - YY" th:field="*{createAt}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                            </div>
+                        </div>
+
+                        <!-- AUTO DATE PICKER | TODAY -->
+                        <script>
+                            var date = new Date();
+                            
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            
+                            if (month < 10) month = "0" + month;
+                            if (day < 10) day = "0" + day;
+                            
+                            var today = year + "-" + month + "-" + day;       
+                            document.getElementById("createAt").value = today;
+                        </script>
+
+                        <!-- FILE -->
+                        <div class="col mb-3">
+                            <label for="formFile" class="form-label">Foto Consultorio</label>
+                            <input class="form-control" type="file" name="file" id="formFile" />
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                  <input type="submit" value="Save" class="btn btn-primary" >
+                </div>
+                </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+  <div th:fragment="addProducts">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <!-- <div th:object="${office}" th:remove="tag">
+                <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                  <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+              </div> -->
+
+              <form th:action="@{/admin/office/add}" th:object="${office}" method="post" enctype="multipart/form-data">
+
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCenterTitle">Agregar Consultorio</h5>
+                </div>
+  
+                <div class="modal-body">
+  
+                    <div class="row g-2">
+
+                        <!-- NAME -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                            <label for="name" class="form-label">Nombre</label>
+                            <input type="text" id="name" class="form-control" placeholder="Nombre" th:field="*{name}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                            </div>
+                        </div>
+
+                        <!-- DENTIST -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                            <label class="form-label">Odontologo</label>
+                            <select class="form-select" th:field="*{dentist.id}">
+                                <th:block th:each="item :${dentists}">
+                                <option  th:value="${item.id}" th:text="${item.name}"></option>
+                                </th:block>
+                            </select>
+                            <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></small> -->
+                            </div>
+                        </div>
+
+                        <!-- STATUS -->
+                        <div class="col mb-3">
+                            <div class="form-group">
+                                <label for="formFile" class="form-label">STATUS</label>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="status" th:field="*{status}"
+                                        th:errorclass="'form-control alert-danger'" checked />
+                                    <label class="form-check-label" for="status">Activo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+  
+                    <div class="row g-2">
+
+                        <!-- DESCRIPTION -->
+                        <div class="col mb-0">
+                            <div class="form-group">
+                            <label for="description" class="form-label">Descripcion</label>
+                            <input type="text" id="description" class="form-control" placeholder="Descripcion" th:field="*{description}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                            </div>
+                        </div>
+
+                        <!-- DATE CREATION -->
+                        <div class="col mb-0">
+                            <div class="form-group">
+                            <label for="createAt" class="form-label">Creacion</label>
+                            <input type="date" id="createAt" class="form-control" placeholder="DD - MM - YY" th:field="*{createAt}" th:errorclass="'form-control alert-danger'"/>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                            </div>
+                        </div>
+
+                        <!-- AUTO DATE PICKER | TODAY -->
+                        <script>
+                            var date = new Date();
+                            
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            
+                            if (month < 10) month = "0" + month;
+                            if (day < 10) day = "0" + day;
+                            
+                            var today = year + "-" + month + "-" + day;       
+                            document.getElementById("createAt").value = today;
+                        </script>
+
+                        <!-- FILE -->
+                        <div class="col mb-3">
+                            <label for="formFile" class="form-label">Foto Consultorio</label>
+                            <input class="form-control" type="file" name="file" id="formFile" />
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                  <input type="submit" value="Save" class="btn btn-primary" >
+                </div>
+                </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+</body>
+
+</html>

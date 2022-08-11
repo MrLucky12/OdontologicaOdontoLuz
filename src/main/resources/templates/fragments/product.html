@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+  <div th:fragment="ProductTable">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+              <!-- Contextual Classes -->
+
+              <div class="card">
+                <h5 class="card-header">Lista de Productos</h5>
+                <div class="col-3">
+                  <button class="btn rounded-pill btn-info" ><a th:href="@{/admin/product/add}">ADD</a></button>
+                </div>
+                <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>CATEGORIA</th><th>STOCK</th><th>VENCIMIENTO</th><th>OPCIONES</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                      
+                      <div th:each="item: ${products}">
+                        <div th:if="${item.stock} > 0">
+                            <tr class="table-light">
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.id}"></strong></td>
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.name}"></strong></td>
+                              <td th:text="${item.description}"></td>
+                              <td th:text="${item.category.name}"></td>
+                              <td>
+                                  <span class="badge bg-label-success me-1" th:text="'Disponible'+' '+':'+' '+${item.stock}">Disponible</span>
+                              </td>
+                              <td><span class="badge bg-label-primary me-1" th:text="${item.expiration}"></span></td>
+                              <td>
+                                <div class="dropdown">
+                                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                  </button>
+                                  <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                        </div>
+                      </div>
+
+                      <div th:each="item: ${products}">
+                        <div th:if="${item.stock} == 0">
+                            <tr class="table-danger">
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.id}"></strong></td>
+                              <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong th:text="${item.name}"></strong></td>
+                              <td th:text="${item.description}"></td>
+                              <td th:text="${item.category.name}"></td>
+                              <td><span class="badge bg-label-warning me-1">No Disponible</span></td>
+                              <td><span class="badge bg-label-primary me-1" th:text="${item.expiration}"></span></td>
+                              <td>
+                                <div class="dropdown">
+                                  <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                  </button>
+                                  <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                        </div>
+                      </div>
+
+                    </tbody>
+                  </table>
+                  <br>
+                  <nav th:replace="extras::paginator"></nav>
+
+                </div>
+              </div>
+              <!--/ Contextual Classes -->
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- / Content -->
+  </div>
+
+  <div th:fragment="addProduct">
+    <!-- Content -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+      <div class="row">
+
+        <!-- MAIN DIV -->
+        <div class="col-lg-12 mb-4 order-0">
+          <div class="card">
+            <div class="d-flex align-items-end row">
+
+              <div th:object="${product}" th:remove="tag">
+                <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                  <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+              </div>
+
+              <form th:action="@{/admin/product/add}" th:object="${product}" method="post">
+
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalCenterTitle">Lista de Productos</h5>
+                </div>
+  
+                <div class="modal-body">
+  
+                  <div class="row g-2">
+
+                    <!-- NAME -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" id="name" class="form-control" placeholder="Nombre" th:field="*{name}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                      </div>
+                    </div>
+
+                    <!-- STOCK -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="text" id="stock" class="form-control" placeholder="Nombre" th:field="*{stock}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></small>
+                      </div>
+                    </div>
+
+                    <!-- CATEGORIES -->
+                    <div class="col mb-3">
+                      <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" th:field="*{category.id}">
+                          <th:block th:each="item :${categories}">
+                            <option  th:value="${item.id}" th:text="${item.name}"></option>
+                          </th:block>
+                        </select>
+                        <!-- <small class="form-text text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></small> -->
+                      </div>
+                    </div>
+
+                  </div>
+  
+                  <div class="row g-2">
+  
+                    <!-- DESCRIPTION -->
+                    <div class="col mb-0">
+                      <div class="form-group">
+                        <label for="description" class="form-label">Descripcion</label>
+                        <input type="text" id="description" class="form-control" placeholder="Descripcion" th:field="*{description}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                      </div>
+                    </div>
+  
+                    <!-- DATE CREATION -->
+                    <div class="col mb-0">
+                      <div class="form-group">
+                        <label for="createAt" class="form-label">Creacion</label>
+                        <input type="date" id="createAt" class="form-control" placeholder="DD - MM - YY" th:field="*{createAt}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('createAt')}" th:errors="*{createAt}"></small>
+                      </div>
+                    </div>
+
+                    <!-- AUTO DATE PICKER | TODAY -->
+                    <script>
+                      var date = new Date();
+                      
+                      var day = date.getDate();
+                      var month = date.getMonth() + 1;
+                      var year = date.getFullYear();
+                      
+                      if (month < 10) month = "0" + month;
+                      if (day < 10) day = "0" + day;
+                      
+                      var today = year + "-" + month + "-" + day;       
+                      document.getElementById("createAt").value = today;
+                    </script>
+
+                    <!-- EXPIRATION -->
+                    <div class="col mb-0">
+                      <div class="form-group">
+                        <label for="expiration" class="form-label">Caducidad</label>
+                        <input type="date" id="expiration" class="form-control" placeholder="DD - MM - YY" th:field="*{expiration}" th:errorclass="'form-control alert-danger'"/>
+                        <small class="form-text text-danger" th:if="${#fields.hasErrors('expiration')}" th:errors="*{expiration}"></small>
+                      </div>
+                    </div>
+  
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <input type="submit" value="Save" class="btn btn-primary" >
+                </div>
+                </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / Content -->
+  </div>
+
+
+
+</body>
+
+</html>
